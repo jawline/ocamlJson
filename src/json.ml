@@ -9,11 +9,18 @@ let parse (json : string) =
 ;;
 
 exception Not_Numeric_Value
+exception Not_Object
 
 let as_number (v: Value.t) =
   match v with
   | Number v -> v
   | _ -> raise Not_Numeric_Value
+;;
+
+let get_child (v: Value.t) (k: string) =
+  match v with
+  | Object map -> Map.find map k
+  | _ -> raise Not_Object
 ;;
 
 exception Invalid_Structure
@@ -65,3 +72,17 @@ let%test "parse_empty_object" = match (parse "{}") with
   | Object(_) -> raise Invalid_Value
   | _ -> raise Invalid_Structure
 ;;
+
+let%test "parse_sub_object" = match (parse "{ \"obj1\": { \"key1\": 5 } }") with
+  | Object(outer_object) when Map.length outer_object = 1 -> (
+    match get_child (Object outer_object) "obj1" with
+    | Some inner_object -> (
+      match get_child inner_object "key1" with
+        | Some (Number x) when Float.(=) x 5.0 -> true
+        | Some _ -> raise Invalid_Value
+        | None -> raise Invalid_Structure
+    )
+    | None -> raise Invalid_Structure
+  )
+  | Object(_) -> raise Invalid_Value
+  | _ -> raise Invalid_Structure
