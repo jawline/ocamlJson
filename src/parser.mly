@@ -1,6 +1,6 @@
 %token <float> NUMBER
 %token <string> STRING
-%token END OPEN_OBJECT CLOSE_OBJECT OPEN_ARRAY CLOSE_ARRAY COMMA TRUE FALSE COLON
+%token END OPEN_OBJECT CLOSE_OBJECT OPEN_ARRAY CLOSE_ARRAY COMMA TRUE FALSE COLON NULL
 
 %type <Value.t> main
 %start main
@@ -18,6 +18,7 @@ expr:
   | STRING { String($1) }
   | TRUE { Bool(true) }
   | FALSE { Bool(false) }
+  | NULL { Null }
   | json_array { $1 }
   | json_object { $1 }
 ;

@@ -100,3 +100,9 @@ let%test "parse_sub_object" = match (parse "{ \"obj1\": { \"key1\": 5 } }") with
   )
   | Object(_) -> raise Invalid_Value
   | _ -> raise Invalid_Structure
+;;
+
+let%test "parse_null" = match (parse "null") with
+  | Null -> true
+  | _ -> raise Invalid_Value
+;;

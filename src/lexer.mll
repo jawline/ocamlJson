@@ -8,6 +8,7 @@ rule token = parse
     { token lexbuf }
 | "true" { TRUE }
 | "false" { FALSE }
+| "null" { NULL }
 | ['0'-'9']+ ('.' ['0'-'9']+ )? as i
     { NUMBER (float_of_string i) }
 | '"' { read_string (Buffer.create 128) lexbuf }
