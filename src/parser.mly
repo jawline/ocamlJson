@@ -18,18 +18,18 @@ expr:
   | STRING { String($1) }
   | TRUE { Bool(true) }
   | FALSE { Bool(false) }
-  | array { $1 }
+  | json_array { $1 }
   | json_object { $1 }
 ;
 
-array:
+json_array:
   | OPEN_ARRAY CLOSE_ARRAY { Array([]) }
-  | OPEN_ARRAY expr array_parts CLOSE_ARRAY { Array($2::$3) }
+  | OPEN_ARRAY expr json_array_parts CLOSE_ARRAY { Array($2::$3) }
 ;
 
-array_parts:
+json_array_parts:
   | { [] }
-  | COMMA expr array_parts { ($2::$3) }
+  | COMMA expr json_array_parts { ($2::$3) }
 ;
 
 json_object:

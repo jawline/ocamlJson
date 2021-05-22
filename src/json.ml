@@ -1,23 +1,37 @@
 open Core
 open Value
 
-let printf = Printf.printf
+(* JSON value type. Can either be boolean, string, number, array, or map *)
+type t = Value.t;;
 
-let parse (json : string) =
+let parse (json : string): t =
   let linebuf = Lexing.from_string json in
   Parser.main Lexer.token linebuf
 ;;
 
 exception Not_Numeric_Value
+exception Not_Stringable_Value
 exception Not_Object
 
-let as_number (v: Value.t) =
+(* If the value is a number then return that number as a float, otherwise raise Not_Numeric_Value. *)
+let as_number (v: t) =
   match v with
   | Number v -> v
   | _ -> raise Not_Numeric_Value
 ;;
 
-let get_child (v: Value.t) (k: string) =
+(* If the value is a string then return that number as a string, otherwise raise Not_Stringable_Value *)
+let as_string (v:t): string =
+  match v with
+  | String s -> s
+  | _ -> raise Not_Stringable_Value
+;;
+
+(*
+ If the value is an object (map from string to json value) then try to find a child with a specific key
+ name on the value. Returns an optional json_value, which will be Some if the child key exists on the
+ value and None otherwise. If the value is not an object, raise Not_Object *)
+let get_child (v: t) (k: string) =
   match v with
   | Object map -> Map.find map k
   | _ -> raise Not_Object
