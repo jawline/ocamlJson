@@ -1,0 +1,13 @@
+(ocamllex
+  (modules lexer)
+)
+
+(ocamlyacc
+  (modules parser)
+)
+
+(library
+ (name json)
+  (libraries core)
+  (inline_tests)
+  (preprocess (pps ppx_inline_test)))
